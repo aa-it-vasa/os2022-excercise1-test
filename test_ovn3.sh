@@ -49,6 +49,7 @@ fi
 
 currtest=$((currtest+1))
 
+
 touch empty.txt
 output=$(./ovn3 empty.txt)
 code=$?
@@ -56,24 +57,24 @@ expected_output="Antal tecken 0"
 rm empty.txt
 
 if [ "$output" == "$expected_output" ] ; then
-  echo "[$currtest/$numtests] Ok: Korrekt text returnerad. Förväntat \"$expected_output\" fick \"$output\"."
+  echo "[$currtest/$numtests] Ok: Korrekt text returnerad med tom fil. Förväntat \"$expected_output\" fick \"$output\"."
 else
-  echo "[$currtest/$numtests] Fel: Förväntat \"$expected_output\" men fick \"$output\"."
+  echo "[$currtest/$numtests] Fel: Med tom fil. Förväntat \"$expected_output\" men fick \"$output\"."
   fail=true
 fi
 
 currtest=$((currtest+1))
 
-echo -e " hej hopp allihopa \t a\n0 1 2" > test.txt
+awk -v seed=$RANDOM 'BEGIN {srand(seed);for (i = 0; i < 10000; i++){n = int(rand()*127); printf "%c", n}}' > test.txt
 output=$(./ovn3 test.txt)
 code=$?
 expected_output="Antal tecken $(cat test.txt | tr -d '\n\t\r ' |wc -c)"
 rm test.txt
 
 if [ "$output" == "$expected_output" ] ; then
-  echo "[$currtest/$numtests] Ok: Korrekt text returnerad. Förväntat \"$expected_output\" fick \"$output\"."
+  echo "[$currtest/$numtests] Ok: Korrekt text returnerad med random text. Förväntat \"$expected_output\" fick \"$output\"."
 else
-  echo "[$currtest/$numtests] Fel: Förväntat \"$expected_output\" men fick \"$output\"."
+  echo "[$currtest/$numtests] Fel: Med random text. Förväntat \"$expected_output\" men fick \"$output\"."
   fail=true
 fi
 
